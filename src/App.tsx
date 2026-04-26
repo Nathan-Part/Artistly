@@ -1,12 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+import { findArtist } from './api/artistApi'
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [count, setCount] = useState(0)
+    const [artistResult, setArtistResult] = useState<any>(null)
+    const [artistError, setArtistError] = useState<string | null>(null)
 
+    const loadArtist = async () => {
+      try { 
+        const data = await findArtist()
+        setArtistResult(data)
+      } catch (error) {
+        setArtistError(
+         'An error occurred while loading the artists. Please try again later.'
+        )
+      }
+      
+    }
+    
+    useEffect(() => {
+      loadArtist();
+    })
+  
   return (
     <>
       <section id="center">
@@ -28,6 +47,14 @@ function App() {
         >
           Count is {count}
         </button>
+        <div style={{ marginTop: '2rem', maxWidth: '800px', width: '100%' }}>
+          <h2>Resultat de findArtist()</h2>
+          {artistError && <p>Erreur: {artistError}</p>}
+          {!artistError && (
+         
+              JSON.stringify(artistResult, null, 2)
+          )}
+        </div>
       </section>
 
       <div className="ticks"></div>
