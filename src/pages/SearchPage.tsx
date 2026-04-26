@@ -1,15 +1,16 @@
 
 import { useEffect, useState } from 'react'
 import { findArtist } from '../api/artistApi'
+import type { Artist, ArtistResponse } from '../types/artist'
 
 function SearchPage() {
-        const [artistResult, setArtistResult] = useState<any>(null)
+    const [artistResult, setArtistResult] = useState<Artist | null>(null)
     const [artistError, setArtistError] = useState<string | null>(null)
 
     const loadArtist = async () => {
       try { 
-        const data = await findArtist()
-        setArtistResult(data)
+        const data: ArtistResponse = await findArtist()
+        setArtistResult(data.artists[0])
       } catch (error) {
         setArtistError(
          'An error occurred while loading the artists. Please try again later.'
@@ -20,16 +21,13 @@ function SearchPage() {
     
     useEffect(() => {
       loadArtist();
-    })
+    }, [])
 
   return (
     <div style={{ marginTop: '2rem', maxWidth: '800px', width: '100%' }}>
         <h2>Resultat de findArtist()</h2>
         {artistError && <p>Erreur: {artistError}</p>}
-        {!artistError && (
-        
-            JSON.stringify(artistResult, null, 2)
-        )}
+        {!artistError && artistResult && <p>{artistResult.strArtist}</p>}
     </div>
   );
 }
