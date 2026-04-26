@@ -39,14 +39,16 @@ function TopTrackCard({ track, formatDuration }: TopTrackCardProps) {
           )}
         </div>
 
-        <a
-          href={track.strMusicVid || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
-        >
-          Watch video
-        </a>
+        {track.strMusicVid && (
+          <a
+            href={track.strMusicVid}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+          >
+            Watch video
+          </a>
+        )}
       </div>
     </li>
   );
