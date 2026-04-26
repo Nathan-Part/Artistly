@@ -193,9 +193,32 @@ function ArtistDetailPage() {
                                     Open LastFM chart
                                 </a>
                             )}
+
                         </div>
 
                         <div className="self-start space-y-6">
+                            {(artist.intFormedYear || artist.strLabel) && (
+                                <div className="grid gap-4 sm:grid-cols-2">
+                                    {artist.intFormedYear && (
+                                        <div className="rounded-2xl border border-slate-700 bg-[#10131a] p-4 text-left">
+                                            <p className="text-sm font-medium text-slate-400">Formed year</p>
+                                            <p className="mt-2 text-lg font-semibold text-slate-100">
+                                                {artist.intFormedYear}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {artist.strLabel && (
+                                        <div className="rounded-2xl border border-slate-700 bg-[#10131a] p-4 text-left">
+                                            <p className="text-sm font-medium text-slate-400">Label</p>
+                                            <p className="mt-2 text-lg font-semibold text-slate-100">
+                                                {artist.strLabel}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             <div>
                                 <h2 className="text-2xl font-semibold text-slate-50">About the artist</h2>
                                 <p className="mt-3 leading-7 text-slate-300">
