@@ -7,7 +7,7 @@ export interface Artist {
   strGenre: string | null;
   strCountry: string | null;
   strCountryCode: string | null;
-  strArtistBanner : string | null;
+  strArtistBanner: string | null;
   strArtistLogo: string | null;
   strArtistWideThumb: string | null;
   strArtistFanart: string | null;
