@@ -1,8 +1,8 @@
 # Artistly
 
-Artistly is a small React application that lets users search for music artists and explore a dedicated detail page with biography, visual assets, and top tracks.
+Artistly is a React application that lets users search for music artists and open a dedicated detail page with biography, images, metadata, and top tracks.
 
-The project uses data from [TheAudioDB](https://www.theaudiodb.com/) and was built with React, TypeScript, Vite, and Tailwind CSS.
+The project uses data from [TheAudioDB](https://www.theaudiodb.com/) and is built with React, TypeScript, Vite, React Router, and Tailwind CSS.
 
 ## Features
 
@@ -10,10 +10,11 @@ The project uses data from [TheAudioDB](https://www.theaudiodb.com/) and was bui
 - Display artist cards with image, country, style, and genre
 - Open a detail page for each artist
 - Show artist biography, banner, logo, and profile image
-- Display top tracks for the selected artist
+- Display the artist's top tracks
 - Show track duration and video views when available
-- Handle missing data cleanly
-- Support dark and light mode
+- Hide the `Watch video` button when no video link is provided
+- Handle loading, error, and empty states
+- Reuse small UI components to keep pages easier to read
 
 ## Tech Stack
 
@@ -22,6 +23,7 @@ The project uses data from [TheAudioDB](https://www.theaudiodb.com/) and was bui
 - Vite
 - React Router
 - Tailwind CSS
+- ESLint
 
 ## Project Structure
 
@@ -30,18 +32,27 @@ src/
   api/
     artistApi.ts
   assets/
+    hero.png
     logo.png
-    favicon.png
+    react.svg
+    vite.svg
+  components/
+    ArtistCard.tsx
+    CountryBadge.tsx
+    SearchBar.tsx
+    StatusMessage.tsx
+    TopTrackCard.tsx
   pages/
-    SearchPage.tsx
     ArtistDetailPage.tsx
+    NotFoundPage.tsx
+    SearchPage.tsx
   routes/
     AppRouter.tsx
   types/
     artist.tsx
   App.tsx
-  main.tsx
   index.css
+  main.tsx
 ```
 
 ## Routes
@@ -52,9 +63,12 @@ src/
 - `/artist/:id`
   Artist detail page
 
+- `*`
+  Not found page
+
 ## API
 
-This project uses TheAudioDB API through the following endpoints:
+This project uses TheAudioDB API through these endpoints:
 
 - `search.php?s=...`
   Search artists by name
@@ -63,7 +77,7 @@ This project uses TheAudioDB API through the following endpoints:
   Get artist details by id
 
 - `track-top10.php?s=...`
-  Get the artist top tracks
+  Get the top tracks for an artist
 
 ## Environment Variables
 
@@ -75,13 +89,13 @@ VITE_API_URL=https://www.theaudiodb.com/api/v1/json/2
 
 ## Installation
 
-Clone the repository and install dependencies:
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-## Run the Project
+## Available Scripts
 
 Start the development server:
 
@@ -107,7 +121,7 @@ Run ESLint:
 npm run lint
 ```
 
-## Main Pages
+## Pages
 
 ### Search Page
 
@@ -115,6 +129,7 @@ The home page allows the user to:
 
 - search for an artist
 - press `Enter` to launch the search
+- reset the current search
 - display loading and error states
 - browse artist result cards
 
@@ -125,33 +140,36 @@ The detail page shows:
 - artist banner or fallback image
 - artist logo and profile image
 - biography
-- style, genre, and country when available
+- style, genre, country, label, and formed year when available
 - LastFM chart link when available
-- top 3 tracks
+- top tracks
 - duration and views when available
 
-## Error Handling
+## Components
 
-The application includes basic UI handling for:
+The interface now uses small reusable components:
 
-- artist not found
-- top music not found
-- API request failure
-- loading states on search and artist detail pages
+- `SearchBar`
+  Handles the search input and action buttons
 
-## Assets
+- `ArtistCard`
+  Displays a single artist result
 
-- `src/assets/logo.png`
-  Main logo used in the interface
+- `CountryBadge`
+  Displays a country with its flag when available
 
-- `src/assets/favicon.png`
-  Favicon used by the application
+- `StatusMessage`
+  Reusable UI for loading, warning, and error messages
+
+- `TopTrackCard`
+  Displays track information and the video link only when available
 
 ## Notes
 
-- Some artist fields depend entirely on the API response, so certain badges or blocks may not appear if data is missing.
-- Track views are only displayed when the API provides them.
-- Duration falls back to `--:--` when unavailable.
+- Some fields depend entirely on the API response, so certain blocks may not appear for every artist.
+- Track duration falls back to `--:--` when unavailable.
+- Artist and track images use placeholders when the API does not return an image.
+- API responses are typed in TypeScript, but the page logic stays intentionally simple and easy to follow.
 
 ## Author
 
