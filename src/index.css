@@ -39,10 +39,6 @@
     --purple-bg: rgba(192, 58, 207, 0.16);
     --purple-border: rgba(233, 66, 122, 0.45);
   }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
 }
 
 #root {

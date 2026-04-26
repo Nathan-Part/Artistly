@@ -62,7 +62,7 @@ function ArtistDetailPage() {
 
     const formatDuration = (ms: string | null) => {
         if (!ms) {
-            return "";
+            return "--:--";
         }
 
         let seconde = Math.floor(Number(ms) / 1000);
@@ -121,22 +121,28 @@ function ArtistDetailPage() {
                                 {artist.strArtist}
                             </h1>
                             <div className="mt-4 flex flex-wrap gap-3">
-                                <span className="rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
-                                    {artist.strStyle || "Unknown style"}
-                                </span>
-                                <span className="rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
-                                    {artist.strGenre || "Unknown genre"}
-                                </span>
-                                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
-                                    {artist.strCountryCode && (
-                                        <img
-                                            src={`https://flagcdn.com/w40/${artist.strCountryCode.toLowerCase()}.png`}
-                                            alt={`${artist.strCountry || "Country"} flag`}
-                                            className="h-4 w-6 rounded-sm object-cover"
-                                        />
-                                    )}
-                                    <span>{artist.strCountry || "Unknown country"}</span>
-                                </span>
+                                {artist.strStyle && (
+                                    <span className="rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+                                        {artist.strStyle}
+                                    </span>
+                                )}
+                                {artist.strGenre && (
+                                    <span className="rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+                                        {artist.strGenre}
+                                    </span>
+                                )}
+                                {artist.strCountry && (
+                                    <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+                                        {artist.strCountryCode && (
+                                            <img
+                                                src={`https://flagcdn.com/w40/${artist.strCountryCode.toLowerCase()}.png`}
+                                                alt={`${artist.strCountry} flag`}
+                                                className="h-4 w-6 rounded-sm object-cover"
+                                            />
+                                        )}
+                                        <span>{artist.strCountry}</span>
+                                    </span>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -228,12 +234,14 @@ function ArtistDetailPage() {
                                                     {formatDuration(music.intDuration)}
                                                 </span>
                                             </div>
-                                            <div className="mt-2 flex items-center justify-between">
-                                                <span>Views</span>
-                                                <span className="font-semibold text-slate-100">
-                                                    {`${Number(music.intMusicVidViews).toLocaleString()} views`}
-                                                </span>
-                                            </div>
+                                            {music.intMusicVidViews && (
+                                                <div className="mt-2 flex items-center justify-between">
+                                                    <span>Views</span>
+                                                    <span className="font-semibold text-slate-100">
+                                                        {`${Number(music.intMusicVidViews).toLocaleString()} views`}
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
 
                                         <Link

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { searchArtists } from '../api/artistApi'
+import logo from '../assets/logo.png'
 import type { Artist, ArtistResponse } from '../types/artist'
 
 function SearchPage() {
@@ -36,7 +37,7 @@ function SearchPage() {
     <div style={{ marginTop: '2rem', maxWidth: '1100px', width: '100%' }}>
       <div className="mb-5 flex flex-col items-center">
         <img
-          src="/src/assets/logo.png"
+          src={logo}
           alt="Artistly logo"
           className="mb-2 h-auto w-full max-w-[360px] object-contain"
         />
@@ -92,14 +93,20 @@ function SearchPage() {
                     alt={artist.strArtist}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/10 to-transparent" />
-                  <div className="absolute bottom-3 left-3 flex flex-wrap gap-2">
-                    <span className="inline-flex items-center rounded-full border border-white/20 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
-                      {artist.strStyle}
-                    </span>
-                    <span className="inline-flex items-center rounded-full border border-white/20 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
-                      {artist.strGenre}
-                    </span>
-                  </div>
+                  {(artist.strStyle || artist.strGenre) && (
+                    <div className="absolute bottom-3 left-3 flex flex-wrap gap-2">
+                      {artist.strStyle && (
+                        <span className="inline-flex items-center rounded-full border border-white/20 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                          {artist.strStyle}
+                        </span>
+                      )}
+                      {artist.strGenre && (
+                        <span className="inline-flex items-center rounded-full border border-white/20 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                          {artist.strGenre}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-3 p-5 text-left">
                   <div>
@@ -108,16 +115,18 @@ function SearchPage() {
                     </h2>
                   </div>
                   <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <span className="inline-flex max-w-full items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-                      {artist.strCountryCode && (
-                        <img
-                          src={`https://flagcdn.com/w40/${artist.strCountryCode.toLowerCase()}.png`}
-                          alt={`${artist.strCountry || 'Country'} flag`}
-                          className="h-3.5 w-5 rounded-[2px] object-cover shadow-sm"
-                        />
-                      )}
-                      <span className="break-words">{artist.strCountry || 'Unknown country'}</span>
-                    </span>
+                    {artist.strCountry && (
+                      <span className="inline-flex max-w-full items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
+                        {artist.strCountryCode && (
+                          <img
+                            src={`https://flagcdn.com/w40/${artist.strCountryCode.toLowerCase()}.png`}
+                            alt={`${artist.strCountry} flag`}
+                            className="h-3.5 w-5 rounded-[2px] object-cover shadow-sm"
+                          />
+                        )}
+                        <span className="break-words">{artist.strCountry}</span>
+                      </span>
+                    )}
                     <Link
                       to={`/artist/${artist.idArtist}`}
                       className="shrink-0 inline-flex items-center rounded-full bg-[var(--blue)] px-3.5 py-2 text-sm font-medium text-white shadow-[0_10px_24px_-12px_rgba(15,42,92,0.7)] transition duration-300 hover:bg-[var(--purple)] focus:outline-none focus:ring-4 focus:ring-[var(--purple-border)]"
