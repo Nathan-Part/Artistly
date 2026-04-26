@@ -12,7 +12,6 @@ The project uses data from [TheAudioDB](https://www.theaudiodb.com/) and is buil
 - Show artist biography, banner, logo, and profile image
 - Display the artist's top tracks
 - Show track duration and video views when available
-- Hide the `Watch video` button when no video link is provided
 - Handle loading, error, and empty states
 - Reuse small UI components to keep pages easier to read
 
@@ -49,7 +48,7 @@ src/
   routes/
     AppRouter.tsx
   types/
-    artist.tsx
+    artist.ts
   App.tsx
   index.css
   main.tsx
@@ -173,4 +172,4 @@ The interface now uses small reusable components:
 
 ## Author
 
-Project created as a music artist exploration app with React and TypeScript.
+Created by Nathan Partouche.
