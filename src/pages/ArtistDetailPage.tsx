@@ -83,6 +83,15 @@ function ArtistDetailPage() {
         artist?.strArtistThumb ||
         `https://placehold.co/1400x500?text=${artist?.strArtist || "Artist"}`;
 
+    useEffect(() => {
+        if (artist?.strArtist) {
+            document.title = `Artistly | ${artist.strArtist}`;
+            return;
+        }
+
+        document.title = "Artistly | Artist Details";
+    }, [artist]);
+
     if (artistLoading) {
         return (
             <div className="mx-auto max-w-4xl px-4 py-10">
