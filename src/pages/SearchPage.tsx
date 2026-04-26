@@ -8,6 +8,7 @@ function SearchPage() {
   const [artistResults, setArtistResults] = useState<Artist[] | null>(null)
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [artistError, setArtistError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const resetFilters = () => {
     setSearchTerm('')
@@ -17,6 +18,7 @@ function SearchPage() {
 
   const loadArtist = async () => {
     try {
+      setLoading(true)
       setArtistError(null)
       const data: ArtistResponse = await searchArtists(searchTerm)
       if (!data.artists || data.artists.length === 0) {
@@ -30,6 +32,8 @@ function SearchPage() {
         'An error occurred while loading the artists. Please try again later.'
       )
       setArtistResults(null)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -53,6 +57,11 @@ function SearchPage() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && searchTerm) {
+                loadArtist()
+              }
+            }}
             placeholder="Search for an artist..."
             className="w-full bg-transparent text-lg text-white outline-none placeholder:text-slate-500"
           />
@@ -74,8 +83,9 @@ function SearchPage() {
         </button>
       </div>
 
-      {artistError && <p>{artistError}</p>}
-      {!artistError && (
+      {loading && <p>Loading artists...</p>}
+      {artistError && !loading && <p>{artistError}</p>}
+      {!artistError && !loading && (
         <>
           <p className="mb-6 text-center text-sm font-medium text-slate-500">
             {artistResults && artistResults.length > 0 && `${artistResults.length} artists found`}

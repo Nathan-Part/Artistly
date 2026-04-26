@@ -8,15 +8,18 @@ function ArtistDetailPage() {
     const [artist, setArtist] = useState<Artist | null>(null);
     const [topMusic, setTopMusic] = useState<TopMusic[] | null>(null);
     const [artistError, setArtistError] = useState<string | null>(null);
-    const [topMusicError, setTopMusicError] = useState<string | null>(null)
+    const [topMusicError, setTopMusicError] = useState<string | null>(null);
+    const [artistLoading, setArtistLoading] = useState(true);
 
     const loadArtist = async () => {
         if (!id) {
             setArtistError("Artist ID not found.");
+            setArtistLoading(false);
             return;
         }
 
         try {
+            setArtistLoading(true);
             setArtistError(null);
             const data: ArtistResponse = await getArtistById(id);
             if (!data.artists || data.artists.length === 0) {
@@ -29,7 +32,9 @@ function ArtistDetailPage() {
         } catch {
             setArtist(null);
             setArtistError("An error occurred while loading the artist.");
-        } 
+        } finally {
+            setArtistLoading(false);
+        }
     };
 
     const loadTopMusic = async () => {
@@ -78,6 +83,16 @@ function ArtistDetailPage() {
         artist?.strArtistThumb ||
         `https://placehold.co/1400x500?text=${artist?.strArtist || "Artist"}`;
 
+    if (artistLoading) {
+        return (
+            <div className="mx-auto max-w-4xl px-4 py-10">
+                <div className="rounded-3xl border border-slate-700 bg-[#11131b] p-6 text-slate-200">
+                    <p className="text-lg font-semibold">Loading artist...</p>
+                </div>
+            </div>
+        );
+    }
+
     if (artistError) {
         return (
             <div className="mx-auto max-w-4xl px-4 py-10">
@@ -89,13 +104,7 @@ function ArtistDetailPage() {
     }
 
     if (!artist) {
-        return (
-            <div className="mx-auto max-w-4xl px-4 py-10">
-                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <p className="text-lg font-semibold text-slate-900">No artist data available.</p>
-                </div>
-            </div>
-        );
+        return null;
     }
 
     return (
