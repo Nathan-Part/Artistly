@@ -6,5 +6,5 @@ export interface Artist {
 }
 
 export interface ArtistResponse {
-    artists: Artist[];
+  artists: Artist[] | null;
 }
