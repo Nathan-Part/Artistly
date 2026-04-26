@@ -9,11 +9,17 @@ function SearchPage() {
     const [searchTerm, setSearchTerm] = useState<string>('')
     const [artistError, setArtistError] = useState<string | null>(null)
 
+    const resetFilters = () => {
+      setSearchTerm('')
+      setArtistResults(null)
+      setArtistError(null)
+    }
+    
     const loadArtist = async () => {
       try { 
         setArtistError(null)
         const data: ArtistResponse = await searchArtists(searchTerm)
-        if (!data.artists || data.artists.length === 0 || searchTerm.trim() === '') {
+        if (!data.artists || data.artists.length === 0) {
           setArtistResults(null)
           setArtistError('Artist not found.')
           return
@@ -44,18 +50,29 @@ function SearchPage() {
           <button
             onClick={loadArtist}
             className="rounded-[1.6rem] bg-slate-800 px-8 py-3 text-lg font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-600"
+            disabled={!searchTerm}
           >
             Search
+          </button>
+          <button
+            onClick={resetFilters}
+            className="rounded-[1.6rem] border border-slate-700 bg-transparent px-6 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-slate-700"
+          >
+            Remove filter
           </button>
         </div>
         {artistError && <p>{artistError}</p>}
         {!artistError && (
-          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {artistResults?.map((artist) => (
-            <div
-              key={artist.idArtist}
-              className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_16px_40px_-20px_rgba(15,23,42,0.35)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_45px_-20px_rgba(15,23,42,0.4)]"
-            >
+          <>
+            <p className="mb-6 text-center text-sm font-medium text-slate-500">
+              {artistResults && artistResults.length > 0 && `${artistResults.length} artists found`}
+            </p>
+            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {artistResults?.map((artist) => (
+              <div
+                key={artist.idArtist}
+                className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_16px_40px_-20px_rgba(15,23,42,0.35)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_45px_-20px_rgba(15,23,42,0.4)]"
+              >
                 <div className="relative">
                     <img
                       className="h-56 w-full object-cover"
@@ -98,9 +115,10 @@ function SearchPage() {
                       </Link>
                     </div>
                 </div>
+              </div>
+              ))}
             </div>
-            ))}
-          </div>
+          </>
         )}
     </div>
     
