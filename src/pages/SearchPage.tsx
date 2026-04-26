@@ -107,7 +107,7 @@ function SearchPage() {
                         <span className="break-words">{artist.strCountry || 'Unknown country'}</span>
                       </span>
                       <Link
-                        to="/details/"
+                        to={`/artist/${artist.idArtist}`}
                         className="shrink-0 inline-flex items-center rounded-full bg-slate-900 px-3.5 py-2 text-sm font-medium text-white transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300"
                       >
                         View details
