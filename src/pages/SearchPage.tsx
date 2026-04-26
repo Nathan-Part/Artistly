@@ -1,44 +1,48 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { searchArtists } from '../api/artistApi'
-import logo from '../assets/logo.png'
-import type { Artist, ArtistResponse } from '../types/artist'
+import { useState } from "react";
+import { searchArtists } from "../api/artistApi";
+import logo from "../assets/logo.png";
+import ArtistCard from "../components/ArtistCard";
+import SearchBar from "../components/SearchBar";
+import type { Artist, ArtistResponse } from "../types/artist";
 
 function SearchPage() {
-  const [artistResults, setArtistResults] = useState<Artist[] | null>(null)
-  const [searchTerm, setSearchTerm] = useState<string>('')
-  const [artistError, setArtistError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [artistResults, setArtistResults] = useState<Artist[] | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [artistError, setArtistError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const resetFilters = () => {
-    setSearchTerm('')
-    setArtistResults(null)
-    setArtistError(null)
-  }
+    setSearchTerm("");
+    setArtistResults(null);
+    setArtistError(null);
+  };
 
   const loadArtist = async () => {
     try {
-      setLoading(true)
-      setArtistError(null)
-      const data: ArtistResponse = await searchArtists(searchTerm)
+      setLoading(true);
+      setArtistError(null);
+
+      const data: ArtistResponse = await searchArtists(searchTerm);
+
       if (!data.artists || data.artists.length === 0) {
-        setArtistResults(null)
-        setArtistError('Artist not found.')
-        return
+        setArtistResults(null);
+        setArtistError("Artist not found.");
+        return;
       }
-      setArtistResults(data.artists)
+
+      setArtistResults(data.artists);
     } catch {
       setArtistError(
-        'An error occurred while loading the artists. Please try again later.'
-      )
-      setArtistResults(null)
+        "An error occurred while loading the artists. Please try again later."
+      );
+      setArtistResults(null);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div style={{ marginTop: '2rem', maxWidth: '1100px', width: '100%' }}>
+    <div style={{ marginTop: "2rem", maxWidth: "1100px", width: "100%" }}>
       <div className="mb-5 flex flex-col items-center">
         <img
           src={logo}
@@ -50,38 +54,12 @@ function SearchPage() {
         </p>
       </div>
 
-      <div className="mb-6 flex flex-col gap-3 rounded-[2rem] border border-[var(--purple-border)] bg-[#0b0d16] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] sm:flex-row sm:items-center">
-        <div className="flex min-h-[64px] flex-1 items-center gap-3 rounded-[1.4rem] bg-[#121521] px-4 text-slate-400 ring-1 ring-[var(--purple-bg)] transition focus-within:ring-2 focus-within:ring-[var(--pink)]">
-          <span className="shrink-0 text-xl leading-none text-[var(--purple)]">🔍</span>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && searchTerm) {
-                loadArtist()
-              }
-            }}
-            placeholder="Search for an artist..."
-            className="w-full bg-transparent text-lg text-white outline-none placeholder:text-slate-500"
-          />
-        </div>
-
-        <button
-          onClick={loadArtist}
-          className="min-h-[64px] rounded-[1.4rem] bg-[var(--purple)] px-8 text-base font-semibold text-white shadow-[0_12px_30px_-16px_rgba(106,63,217,0.8)] transition duration-300 hover:bg-[var(--red)] focus:outline-none focus:ring-4 focus:ring-[var(--purple-border)]"
-          disabled={!searchTerm}
-        >
-          Search
-        </button>
-
-        <button
-          onClick={resetFilters}
-          className="min-h-[64px] rounded-[1.4rem] bg-[var(--blue)] px-6 text-sm font-medium text-white transition duration-300 hover:bg-[var(--pink)] focus:outline-none focus:ring-4 focus:ring-[var(--purple-border)]"
-        >
-          Remove filter
-        </button>
-      </div>
+      <SearchBar
+        value={searchTerm}
+        onChange={setSearchTerm}
+        onSearch={loadArtist}
+        onReset={resetFilters}
+      />
 
       {loading && <p>Loading artists...</p>}
       {artistError && !loading && <p>{artistError}</p>}
@@ -92,67 +70,13 @@ function SearchPage() {
           </p>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {artistResults?.map((artist) => (
-              <div
-                key={artist.idArtist}
-                className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_16px_40px_-20px_rgba(15,23,42,0.35)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_45px_-20px_rgba(15,23,42,0.4)]"
-              >
-                <div className="relative">
-                  <img
-                    className="h-56 w-full object-cover"
-                    src={artist.strArtistThumb || 'https://placehold.co/600x600?text=Artist'}
-                    alt={artist.strArtist}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/10 to-transparent" />
-                  {(artist.strStyle || artist.strGenre) && (
-                    <div className="absolute bottom-3 left-3 flex flex-wrap gap-2">
-                      {artist.strStyle && (
-                        <span className="inline-flex items-center rounded-full border border-white/20 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
-                          {artist.strStyle}
-                        </span>
-                      )}
-                      {artist.strGenre && (
-                        <span className="inline-flex items-center rounded-full border border-white/20 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
-                          {artist.strGenre}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <div className="space-y-3 p-5 text-left">
-                  <div>
-                    <h2 className="text-xl font-semibold tracking-tight text-slate-900">
-                      {artist.strArtist}
-                    </h2>
-                  </div>
-                  <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    {artist.strCountry && (
-                      <span className="inline-flex max-w-full items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-                        {artist.strCountryCode && (
-                          <img
-                            src={`https://flagcdn.com/w40/${artist.strCountryCode.toLowerCase()}.png`}
-                            alt={`${artist.strCountry} flag`}
-                            className="h-3.5 w-5 rounded-[2px] object-cover shadow-sm"
-                          />
-                        )}
-                        <span className="break-words">{artist.strCountry}</span>
-                      </span>
-                    )}
-                    <Link
-                      to={`/artist/${artist.idArtist}`}
-                      className="shrink-0 inline-flex items-center rounded-full bg-[var(--blue)] px-3.5 py-2 text-sm font-medium text-white shadow-[0_10px_24px_-12px_rgba(15,42,92,0.7)] transition duration-300 hover:bg-[var(--purple)] focus:outline-none focus:ring-4 focus:ring-[var(--purple-border)]"
-                    >
-                      View details
-                      <svg className="ml-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14m0 0-4 4m4-4-4-4"/></svg>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <ArtistCard key={artist.idArtist} artist={artist} />
             ))}
           </div>
         </>
       )}
     </div>
-  )
+  );
 }
 
-export default SearchPage
+export default SearchPage;

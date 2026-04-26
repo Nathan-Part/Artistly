@@ -1,6 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL
+import type { ArtistResponse, TopMusicResponse } from "../types/artist"
 
-export async function searchArtists(search: string) {
+export async function searchArtists(search: string): Promise<ArtistResponse>  {
     try { 
         const response = await fetch(`${API_URL}/search.php?s=${encodeURIComponent(search)}`)
         if (!response.ok) {
@@ -14,7 +15,7 @@ export async function searchArtists(search: string) {
     }
 }
 
-export async function getArtistById(id: string) {
+export async function getArtistById(id: string): Promise<ArtistResponse> {
     try {
         const response = await fetch(`${API_URL}/artist.php?i=${encodeURIComponent(id)}`)
         if (!response.ok) {
@@ -28,7 +29,7 @@ export async function getArtistById(id: string) {
     }
 }
 
-export async function getTopMusic(search: string) {
+export async function getTopMusic(search: string): Promise<TopMusicResponse> {
      try { 
         const response = await fetch(`${API_URL}/track-top10.php?s=${encodeURIComponent(search)}`)
         if (!response.ok) {
