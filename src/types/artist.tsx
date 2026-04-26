@@ -9,6 +9,9 @@ export interface Artist {
   strCountryCode: string | null;
   strArtistBanner : string | null;
   strArtistLogo: string | null;
+  strArtistWideThumb: string | null;
+  strArtistFanart: string | null;
+  strLastFMChart: string | null;
 }
 
 export interface ArtistResponse {
@@ -23,6 +26,7 @@ export interface TopMusic {
   strMusicVid: string | null;
   strTrackThumb: string | null;
   intDuration: string | null;
+  intMusicVidViews: string | null;
 }
 
 export interface TopMusicResponse {
