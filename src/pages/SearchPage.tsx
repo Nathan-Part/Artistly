@@ -66,7 +66,7 @@ function SearchPage() {
       {!artistError && !loading && (
         <>
           <p className="mb-6 text-center text-sm font-medium text-slate-500">
-            {artistResults && artistResults.length > 0 && `${artistResults.length} artists found`}
+            {artistResults && artistResults.length > 0 && `${artistResults.length} ${artistResults.length === 1 ? "artist" : "artists"} found`}
           </p>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {artistResults?.map((artist) => (
