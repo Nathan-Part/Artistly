@@ -5,6 +5,7 @@ import CountryBadge from "../components/CountryBadge";
 import StatusMessage from "../components/StatusMessage";
 import TopTrackCard from "../components/TopTrackCard";
 import type { Artist, ArtistResponse, TopMusic, TopMusicResponse } from "../types/artist";
+import { safeHttpUrl } from "../utils/safeUrl";
 
 function ArtistDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -121,6 +122,8 @@ function ArtistDetailPage() {
     return null;
   }
 
+  const lastFmChartUrl = safeHttpUrl(artist.strLastFMChart);
+
   return (
     <div className="min-h-screen bg-transparent py-8 text-slate-100">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4">
@@ -184,9 +187,9 @@ function ArtistDetailPage() {
                 className="h-72 w-full rounded-2xl object-cover shadow-md"
               />
 
-              {artist.strLastFMChart && (
+              {lastFmChartUrl && (
                 <a
-                  href={artist.strLastFMChart}
+                  href={lastFmChartUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-700"

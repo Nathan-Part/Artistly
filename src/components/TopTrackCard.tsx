@@ -1,4 +1,5 @@
 import type { TopMusic } from "../types/artist";
+import { safeHttpUrl } from "../utils/safeUrl";
 
 interface TopTrackCardProps {
   track: TopMusic;
@@ -6,6 +7,8 @@ interface TopTrackCardProps {
 }
 
 function TopTrackCard({ track, formatDuration }: TopTrackCardProps) {
+  const musicVideoUrl = safeHttpUrl(track.strMusicVid);
+
   return (
     <li className="overflow-hidden rounded-3xl border border-slate-800 bg-[#181b24] shadow-sm">
       <img
@@ -39,9 +42,9 @@ function TopTrackCard({ track, formatDuration }: TopTrackCardProps) {
           )}
         </div>
 
-        {track.strMusicVid && (
+        {musicVideoUrl && (
           <a
-            href={track.strMusicVid}
+            href={musicVideoUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
