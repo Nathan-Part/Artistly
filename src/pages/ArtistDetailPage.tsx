@@ -9,70 +9,76 @@ import { safeHttpUrl } from "../utils/safeUrl";
 
 function ArtistDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const [artist, setArtist] = useState<Artist | null>(null);
-  const [topMusic, setTopMusic] = useState<TopMusic[] | null>(null);
-  const [artistError, setArtistError] = useState<string | null>(null);
-  const [topMusicError, setTopMusicError] = useState<string | null>(null);
-  const [artistLoading, setArtistLoading] = useState(true);
-
-  const loadArtist = async () => {
-    if (!id) {
-      setArtistError("Artist ID not found.");
-      setArtistLoading(false);
-      return;
-    }
-
-    try {
-      setArtistLoading(true);
-      setArtistError(null);
-
-      const data: ArtistResponse = await getArtistById(id);
-
-      if (!data.artists || data.artists.length === 0) {
-        setArtist(null);
-        setArtistError("Artist not found.");
-        return;
-      }
-
-      setArtist(data.artists[0]);
-    } catch {
-      setArtist(null);
-      setArtistError("An error occurred while loading the artist.");
-    } finally {
-      setArtistLoading(false);
-    }
-  };
-
-  const loadTopMusic = async () => {
-    if (!artist) {
-      return;
-    }
-
-    try {
-      setTopMusicError(null);
-
-      const dataMusic: TopMusicResponse = await getTopMusic(artist.strArtist);
-
-      if (!dataMusic.track || dataMusic.track.length === 0) {
-        setTopMusic(null);
-        setTopMusicError("Top music not found.");
-        return;
-      }
-
-      setTopMusic(dataMusic.track);
-    } catch {
-      setTopMusic(null);
-      setTopMusicError("An error occurred while loading the top music.");
-    }
-  };
+  const [artistState, setArtistState] = useState<{
+    id?: string;
+    artist: Artist | null;
+    error: string | null;
+  }>({ artist: null, error: null });
+  const [musicState, setMusicState] = useState<{
+    name?: string;
+    tracks: TopMusic[] | null;
+    error: string | null;
+  }>({ tracks: null, error: null });
 
   useEffect(() => {
-    loadArtist();
+    if (!id) {
+      return;
+    }
+
+    let cancelled = false;
+
+    getArtistById(id)
+      .then((data: ArtistResponse) => {
+        if (cancelled) return;
+        const found = data.artists?.[0] ?? null;
+        setArtistState({ id, artist: found, error: found ? null : "Artist not found." });
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setArtistState({ id, artist: null, error: "An error occurred while loading the artist." });
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
+  const isCurrentArtist = artistState.id === id;
+  const artist = isCurrentArtist ? artistState.artist : null;
+  const artistError = !id ? "Artist ID not found." : isCurrentArtist ? artistState.error : null;
+  const artistLoading = Boolean(id) && !isCurrentArtist;
+  const artistName = artist?.strArtist;
+
   useEffect(() => {
-    loadTopMusic();
-  }, [artist]);
+    if (!artistName) {
+      return;
+    }
+
+    let cancelled = false;
+
+    getTopMusic(artistName)
+      .then((dataMusic: TopMusicResponse) => {
+        if (cancelled) return;
+        const tracks = dataMusic.track && dataMusic.track.length > 0 ? dataMusic.track : null;
+        setMusicState({ name: artistName, tracks, error: tracks ? null : "Top music not found." });
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setMusicState({
+          name: artistName,
+          tracks: null,
+          error: "An error occurred while loading the top music.",
+        });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [artistName]);
+
+  const isCurrentMusic = musicState.name === artistName;
+  const topMusic = isCurrentMusic ? musicState.tracks : null;
+  const topMusicError = isCurrentMusic ? musicState.error : null;
 
   useEffect(() => {
     if (artist?.strArtist) {
